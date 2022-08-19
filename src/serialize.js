@@ -69,7 +69,7 @@ export async function exportIndex(callback, self, field, index_doc, index){
 
             // If there are no properties remaining to export, then return an empty promise with
             // 'true'
-            return true;
+            return false;
     }
 
     return await lazyExport(callback, self || this, field ? field + "." + key : key, index_doc, index, data);
