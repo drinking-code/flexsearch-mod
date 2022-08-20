@@ -495,7 +495,7 @@ Index.prototype.search = function(query, limit, options){
 
         if(arr){
 
-            return /** @type {Array<number|string>} */ (arr);
+            return /** @type {Array<number|string>} */ (addQueryToResults(arr, query));
         }
 
         // apply suggestions on last loop or fallback
@@ -503,6 +503,7 @@ Index.prototype.search = function(query, limit, options){
         if(suggest && (index === length - 1)){
 
             let length = result.length;
+            result = addQueryToResults(result, query)
 
             if(!length){
 
@@ -527,8 +528,17 @@ Index.prototype.search = function(query, limit, options){
         }
     }
 
-    return intersect(result, limit, offset, suggest);
+    return intersect(addQueryToResults(result, query), limit, offset, suggest);
 };
+
+function addQueryToResults(results, query) {
+    return results.map(result => {
+        if (Array.isArray(result))
+            return addQueryToResults(result, query)
+        result.query = query
+        return result
+    })
+}
 
 /**
  * Returns an array when the result is done (to stop the process immediately),
